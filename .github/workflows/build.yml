@@ -15,6 +15,9 @@ jobs:
     steps:
       - name: 📥 Checkout source code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: true
 
       - name: 🔧 Setup Java
         uses: actions/setup-java@v3
@@ -25,20 +28,25 @@ jobs:
       - name: 🛠 Setup Android SDK
         uses: android-actions/setup-android@v2
 
-      - name: 📦 Install dependencies
-        run: |
-          cd android
-          chmod +x gradlew  # Cấp quyền thực thi
-          ./gradlew dependencies
+      - name: 📦 Install Node.js & npm dependencies
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: 📦 Install npm dependencies
+        run: npm install
+
+      - name: 🛠 Check if gradlew exists
+        run: ls -la android/
 
       - name: 🚀 Build APK
         run: |
           cd android
-          chmod +x gradlew  # Đảm bảo gradlew có quyền chạy
+          chmod +x gradlew
           ./gradlew assembleRelease
 
       - name: 📤 Upload APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: release-apk
           path: android/app/build/outputs/apk/release/app-release.apk
