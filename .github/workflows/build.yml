@@ -34,7 +34,7 @@ jobs:
           node-version: '18'
 
       - name: 📦 Install npm dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: 🛠 Check if gradlew exists
         run: ls -la android/
